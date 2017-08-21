@@ -29,6 +29,7 @@ public class UpdateAppHelper {
     private String apkPath = "";
     private String serverVersionName = "";
     private boolean isForce = false; //是否强制更新
+    private boolean isWifi=false;//wifi自动更新
     private int localVersionCode = 0;
     private String localVersionName = "";
     private UpdateAppHelper(Activity activity) {
@@ -64,7 +65,10 @@ public class UpdateAppHelper {
         this.serverVersionName = serverVersionName;
         return this;
     }
-
+    public UpdateAppHelper isWifi(boolean isWifi) {
+        this.isWifi = isWifi;
+        return this;
+    }
     public UpdateAppHelper isForce(boolean isForce) {
         this.isForce = isForce;
         return this;
@@ -115,22 +119,29 @@ public class UpdateAppHelper {
     }
 
     private void realUpdate() {
-        UpdateDialog.showDialog(activity, "检查更新", "发现新版本,是否下载更新?", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                        if (downloadBy == DOWNLOAD_BY_APP) {
-                            DownloadApp.downloadForAutoInstall(activity, apkPath, "Sign_app-release.apk", serverVersionName);
-                        }else if (downloadBy == DOWNLOAD_BY_BROWSER){
-                            DownloadApp.downloadForWebView(activity,apkPath);
-                        }
+        if (isWifi){
+            if (downloadBy == DOWNLOAD_BY_APP) {
+                DownloadApp.downloadForAutoInstall(activity, apkPath, "Sign_app-release.apk", serverVersionName);
+            }else if (downloadBy == DOWNLOAD_BY_BROWSER){
+                DownloadApp.downloadForWebView(activity,apkPath);
             }
-        }, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (isForce)activity.finish();
-            }
-        });
+        }else {
+            UpdateDialog.showDialog(activity, "检查更新", "发现新版本,是否下载更新?", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (downloadBy == DOWNLOAD_BY_APP) {
+                        DownloadApp.downloadForAutoInstall(activity, apkPath, "Sign_app-release.apk", serverVersionName);
+                    }else if (downloadBy == DOWNLOAD_BY_BROWSER){
+                        DownloadApp.downloadForWebView(activity,apkPath);
+                    }
+                }
+            }, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (isForce)activity.finish();
+                }
+            });
+        }
     }
-
 
 }

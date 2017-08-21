@@ -37,7 +37,6 @@ public class DownloadApp {
             DownloadManager downloadManager = (DownloadManager) context
                     .getSystemService(Context.DOWNLOAD_SERVICE);
             DownloadManager.Request request = new DownloadManager.Request(uri);
-
             request.setVisibleInDownloadsUi(true);
             request.setTitle("正在更新："+getApplicationName(context)+title);
             String filePath = null;
