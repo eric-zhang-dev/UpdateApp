@@ -22,22 +22,16 @@ public class UpdateAppReceiver extends BroadcastReceiver {
                     long downloadId = DownloadApp.downloadUpdateApkId;
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(downloadId);
-                    DownloadManager downloadManager = (DownloadManager) context
-                            .getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                     c = downloadManager.query(query);
                     if (c.moveToFirst()) {
-                        int status = c.getInt(c
-                                .getColumnIndex(DownloadManager.COLUMN_STATUS));
+                        int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
                         if (status == DownloadManager.STATUS_FAILED) {
                             downloadManager.remove(downloadId);
-
                         } else if (status == DownloadManager.STATUS_SUCCESSFUL) {
                             if (DownloadApp.downloadUpdateApkFilePath != null) {
                                 Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setDataAndType(
-                                        Uri.parse("file://"
-                                                + DownloadApp.downloadUpdateApkFilePath),
-                                        "application/vnd.android.package-archive");
+                                i.setDataAndType(Uri.parse("file://"+ DownloadApp.downloadUpdateApkFilePath), "application/vnd.android.package-archive");
                                 //todo 针对不同的手机 以及sdk版本  这里的uri地址可能有所不同
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(i);
@@ -46,7 +40,6 @@ public class UpdateAppReceiver extends BroadcastReceiver {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
